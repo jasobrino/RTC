@@ -98,5 +98,5 @@ void sleep() {
     restServer = false;
     epaperMostrarDatos();
     delay(50);
-    ESP.deepSleep(1e6 * 60);
+    ESP.deepSleep(1e6 * 60); // duerme durante 1 minuto
 }
