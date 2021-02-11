@@ -18,7 +18,7 @@ volatile bool alarm_on = true;
 volatile bool refreshTemp = true;
 
 char diasem[7][12] = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
-
+char nommes[12][4] = {"ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"};
 // void mostrarHora() {
 //     char str_hora[20];
 //     sprintf(str_hora,"%02d/%02d/%04d %02d:%02d:%02d",
