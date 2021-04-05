@@ -7,18 +7,12 @@
 #include <RTClib.h>
 #include <DHT.h>
 #include <GxEPD2_BW.h>
-#include <Fonts/FreeMono9pt7b.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
 #include <Fonts/FreeMonoBold12pt7b.h>
-#include <Fonts/FreeMonoBold18pt7b.h>
-#include <Fonts/FreeMonoBold24pt7b.h>
-#include <Fonts/FreeSerif18pt7b.h>
 #include <Fonts/FreeSerif9pt7b.h>
 #include <Fonts/FreeSans9pt7b.h>
 #include <Fonts/FreeSans12pt7b.h>
 #include <Fonts/FreeSansBold24pt7b.h>
-#include <Fonts/Picopixel.h>
-#include <Fonts/TomThumb.h>
 #include <Fonts/Org_01.h>
 #include <ArduinoJson.h>
 #include <ESP8266WebServer.h>
@@ -61,12 +55,6 @@ void updateTempHum();
 // funciones en main
 int wifi_init();
 int getBatt();
-
-//funciones en oled.hpp
-// void OledInit();
-// void oledVerHora(st_hora h);
-// void oledVerTemp(float t, float h);
-// extern U8X8_SH1106_128X64_NONAME_HW_I2C u8x8;
 
 // funciones en epaper.cpp
 void epaper_init();

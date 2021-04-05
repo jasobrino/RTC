@@ -11,7 +11,7 @@ const char* weatherkey = "/weather/weather.key";
 
 WiFiClient client;
 HTTPClient http;
-DynamicJsonDocument doc(1400); 
+DynamicJsonDocument w_doc(1400); 
 TimeChangeRule CEST = {"CEST", Last, Sun, Mar, 2, 120};
 TimeChangeRule CET = {"CET", Last, Sun, Oct, 3, 60};
 Timezone spainTZ(CEST, CET);
@@ -58,22 +58,22 @@ bool getOpenweatherData() {
         filtro["daily"][0]["sunset"] = true;
         filtro["daily"][0]["sunrise"] = true;
         // capturamos los datos usando el filtro
-        DeserializationError error = deserializeJson(doc, http.getStream(), DeserializationOption::Filter(filtro));
+        DeserializationError error = deserializeJson(w_doc, http.getStream(), DeserializationOption::Filter(filtro));
         if(error) {
             if(DEBUG) Serial.print(F("error en DeserializeJson (datos): "));
             if(DEBUG) Serial.println(error.f_str());
             return false;
         } 
         http.end();
-        weather_data.description = doc["current"]["weather"][0]["description"].as<String>();
-        weather_data.icon = doc["current"]["weather"][0]["icon"].as<String>();
-        weather_data.dt = spainTZ.toLocal(doc["current"]["dt"]);
-        weather_data.temp = doc["current"]["temp"];
-        weather_data.humidity = doc["current"]["humidity"];
-        weather_data.temp_min = doc["daily"][0]["temp"]["min"] ;
-        weather_data.temp_max = doc["daily"][0]["temp"]["max"] ;
-        weather_data.sunset = spainTZ.toLocal(doc["daily"][0]["sunset"]);
-        weather_data.sunrise = spainTZ.toLocal(doc["daily"][0]["sunrise"]);
+        weather_data.description =  w_doc["current"]["weather"][0]["description"].as<String>();
+        weather_data.icon =         w_doc["current"]["weather"][0]["icon"].as<String>();
+        weather_data.dt =           spainTZ.toLocal(w_doc["current"]["dt"]);
+        weather_data.temp =         w_doc["current"]["temp"];
+        weather_data.humidity =     w_doc["current"]["humidity"];
+        weather_data.temp_min =     w_doc["daily"][0]["temp"]["min"] ;
+        weather_data.temp_max =     w_doc["daily"][0]["temp"]["max"] ;
+        weather_data.sunset =       spainTZ.toLocal(w_doc["daily"][0]["sunset"]);
+        weather_data.sunrise =      spainTZ.toLocal(w_doc["daily"][0]["sunrise"]);
         return true;
     } else {
         if(DEBUG) Serial.printf("[HTTP] error en GET: %s\n", http.errorToString(httpCode).c_str());
@@ -92,21 +92,21 @@ bool SPIFFSloadData() {
         printf("file json: %s\n", data.c_str());
         fjson.close();
         SPIFFS.end();
-        DeserializationError error = deserializeJson(doc, data);
+        DeserializationError error = deserializeJson(w_doc, data);
         if(error) {
             if(DEBUG) Serial.print(F("error en DeserializeJson (datos): "));
             if(DEBUG) Serial.println(error.f_str());
             return false;
         } 
-        weather_data.description =  doc["description"].as<String>();
-        weather_data.icon =         doc["icon"].as<String>();
-        weather_data.dt =           doc["dt"];
-        weather_data.temp =         doc["temp"];
-        weather_data.temp_min =     doc["temp_min"];
-        weather_data.temp_max =     doc["temp_max"];
-        weather_data.humidity =     doc["humidity"];
-        weather_data.sunset =       doc["sunset"];
-        weather_data.sunrise =      doc["sunrise"];
+        weather_data.description =  w_doc["description"].as<String>();
+        weather_data.icon =         w_doc["icon"].as<String>();
+        weather_data.dt =           w_doc["dt"];
+        weather_data.temp =         w_doc["temp"];
+        weather_data.temp_min =     w_doc["temp_min"];
+        weather_data.temp_max =     w_doc["temp_max"];
+        weather_data.humidity =     w_doc["humidity"];
+        weather_data.sunset =       w_doc["sunset"];
+        weather_data.sunrise =      w_doc["sunrise"];
         if(DEBUG) Serial.printf("temp_min: %.2f  temp_max: %.2f\n", weather_data.temp_min, weather_data.temp_max);
         if(DEBUG) Serial.printf("sunset: %d  sunrise: %d\n", weather_data.sunset, weather_data.sunrise);
         return true;

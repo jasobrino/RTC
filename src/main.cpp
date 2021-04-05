@@ -1,9 +1,9 @@
 #include "globals.h"
 #include "restServer.hpp"
 
-#define SLEEP_DELAY 5 // 60 //tiempo en segundos en modo deep-sleep
+#define SLEEP_TIME 60 //tiempo en segundos en modo deep-sleep
+#define SLEEP_DELAY 2 * 1000 // tiempo antes de entrar deep-sleep
 #define UPDATE_WEATHER_DATA 5 * 60 // tiempo entre actualizaciones datos tiempo
-// #define UPDATE_WEATHER_DATA 5 * 60 // tiempo entre actualizaciones datos tiempo
 static unsigned long ahora = 0, lastMillis = 0, startMillis; // tiempo;
 
 bool pulsado = false;
@@ -25,11 +25,9 @@ void setup() {
     startMillis = millis(); //tiempo actual
     if(DEBUG) {
         Serial.begin(57600);
-    } else  epaper_init();
-    // Serial.println("inicializado puerto serie");
     // inicializar pantalla e-paper
-   
-    
+    } else  epaper_init();
+       
     // Comprobamos si tenemos el RTC conectado
     if (!rtc.begin()) {
         epaperMsg("No hay un modulo RTC");
@@ -50,7 +48,7 @@ void setup() {
         time_t diff = segsAhora - weather_data.dt;
         if(DEBUG) Serial.printf("dt: %ld  ahora: %ld  \ndiff(seg): %ld\n", weather_data.dt, segsAhora, diff);
         // comparamos la diferencia entre actualizaciones (en segundos)
-        if ( true || diff > UPDATE_WEATHER_DATA ) {
+        if ( diff > UPDATE_WEATHER_DATA ) {
             // datos de openweather
             if(!getOpenweatherData()) {
                 if(DEBUG) Serial.println("no ha sido posible cargar los datos metereologicos");
@@ -69,6 +67,8 @@ void setup() {
         Serial.printf("bateria: %d - (%d)\n", BATT_A0, pje);
     } 
     lastMillis = millis(); //tiempo actual
+    // serverInit(); restServer = true; // forzamos el rest server para pruebas
+
 }
 
 void loop() {
@@ -76,8 +76,8 @@ void loop() {
     //if(errorRTC) return;
 
     ahora = millis();
-    //comprobamos si hay que pasar a modo sleep en 1 seg
-    if( !restServer && ahora - lastMillis > 1000 ) {
+    //comprobamos si hay que pasar a modo sleep en SLEEP_DELAY seg
+    if( !restServer && ahora - lastMillis > SLEEP_DELAY ) {
          if(DEBUG) Serial.printf("tiempo entrada en el sleep: %lu ms\n", ahora - startMillis);
         sleep();
     }
@@ -126,7 +126,7 @@ void epaperMsg(const char *message ) {
   delay(300);
 }
 
-// pasamos a modo sleep durante 60 seg.
+// pasamos a modo sleep durante SLEEP_TIME seg.
 void sleep() {
     // pulsado = true;
     modoSleep = true;
@@ -137,7 +137,7 @@ void sleep() {
         epaperMostrarDatos();
     }
     delay(50);
-    ESP.deepSleep(1e6 * SLEEP_DELAY); // duerme durante Sleep_delay segundos
+    ESP.deepSleep(1e6 * SLEEP_TIME);
 }
 
 // inicializa la conexión wifi con el router
@@ -181,6 +181,6 @@ int getBatt() {
    // para el ESP12E/F la entrada A0 tiene 1V max, por lo que el divisor será 1M - 100K
     // int valor = (int)map(BATT_A0, 720, 825, 0, 100); //valores para 2 celdas
     // alimentamos el circuito con una celda
-    int valor = (int)map(BATT_A0, 300, 405, 0, 100);
+    int valor = (int)map(BATT_A0, 260, 380, 0, 100);
     return valor; 
 }

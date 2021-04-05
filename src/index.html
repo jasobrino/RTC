@@ -1,0 +1,87 @@
+#include <pgmspace.h>
+
+const char frontend[] PROGMEM = R"raw(
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reloj RTC</title>
+    <style type="text/css">
+        body { margin: 20px; }
+        .boton { 
+            font-family: arial;
+            border-radius: 28px;
+            text-decoration: none;
+            color: black;
+            background-color: #e7dd49;
+        }
+        .i_text {
+            background-color: #eee;
+            border: 1px  #999;
+            border-radius: 8px;
+            padding: 4px;
+            text-align: right;
+            width: 3em;
+        }
+        .caja {
+            width: 400px;
+            margin: 4px;
+            padding: 6px;
+            box-sizing: border-box;
+            background-color: aqua;
+        }
+    </style>
+</head>
+<body onload="ponFecha()">
+    <header>
+        <h1>Bienvenido a RTC</h1>
+    </header>
+ 
+    <section>
+        <article>
+        <div class="caja">
+        <form action="/frmFecha" method="post">
+            <h2>Ajuste de Fecha</h2>
+            <label>dia: <input type="text" class="i_text" name="dia" id="dia" maxlength="2" onkeypress="return filtronum(event)">
+            <label>mes: <input type="text" class="i_text" name="mes" id="mes" maxlength="2" onkeypress="return filtronum(event)">
+            <label>año: <input type="text" class="i_text" name="anyo" id="anyo" maxlength="4" onkeypress="return filtronum(event)">
+            <input type="hidden" name="ajuste" value="fecha">
+            <input type="submit" value="Enviar" class="boton">
+        </form>
+        </div>
+        <div class="caja">
+        <form action="/frmFecha" method="post">
+            <h2>Ajuste de Hora</h2>
+            <label>hora:<input type="text" class="i_text" name="hora"id="hora" maxlength="2" onkeypress="return filtronum(event)">
+            <label>min: <input type="text" class="i_text" name="min" id="min"  maxlength="2" onkeypress="return filtronum(event)">
+            <label>seg: <input type="text" class="i_text" name="seg" id="seg"  maxlength="2" onkeypress="return filtronum(event)">
+            <input type="hidden" name="ajuste" value="hora">
+            <input type="submit" value="Enviar" class="boton">
+        </form>
+        </div>
+
+        </article>
+    </section>
+
+</body>
+<script>
+    function filtronum(evt) {
+        let cod =  evt.keyCode;
+        if( cod >= 48 && cod <= 57 ) return true;
+        return false;
+    }
+    function ponFecha() { 
+        const hoy=new Date(); 
+        document.getElementById("dia").value=hoy.getDate();
+        document.getElementById("mes").value=hoy.getMonth() + 1;
+        document.getElementById("anyo").value=hoy.getUTCFullYear();
+        document.getElementById("hora").value=hoy.getHours();
+        document.getElementById("min").value=hoy.getMinutes();
+        window.setInterval( () => {
+            const hoy=new Date(); 
+            document.getElementById("seg").value=hoy.getSeconds();
+        }, 500);
+    }
+</script>
+</html>
+)raw";
