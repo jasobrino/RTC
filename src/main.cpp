@@ -12,7 +12,7 @@ bool errorRTC = false;
 bool restServer = false;
 bool openweather_act = false;
 // DEBUG true - activa puerto serie y desactiva display
-bool DEBUG = true;
+bool DEBUG = false;
 
 uint8_t pulsador = D4;
 uint8_t DHT_pin = D6;
